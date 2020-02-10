@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimary"
+    android:paddingStart="@dimen/frag_weather_content_margin_left"
+    android:paddingTop="@dimen/frag_weather_content_margin_top"
+    android:paddingEnd="@dimen/frag_weather_content_margin_right"
+    android:paddingBottom="@dimen/frag_weather_content_margin_bottom">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frag_weather_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/frag_weather_city_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintEnd_toStartOf="@+id/frag_weather_segmentControl_label"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Омск" />
+
+                <TextView
+                    android:id="@+id/frag_weather_segmentControl_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="º"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorBorder"
+                    app:layout_constraintEnd_toStartOf="@+id/frag_weather_select"
+                    app:layout_constraintTop_toTopOf="@+id/frag_weather_select" />
+
+                <info.hoang8f.android.segmented.SegmentedGroup
+                    android:id="@+id/frag_weather_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/frag_weather_city_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:sc_border_width="2dp"
+                    app:sc_checked_text_color="@color/colorText"
+                    app:sc_corner_radius="8dp"
+                    app:sc_tint_color="@color/colorBorder">
+
+                    <RadioButton
+                        android:id="@+id/frag_weather_select_C"
+                        style="@style/RadioButton"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:text="C"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                    <RadioButton
+                        android:id="@+id/frag_weather_select_F"
+                        style="@style/RadioButton"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:text="F"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                </info.hoang8f.android.segmented.SegmentedGroup>
+
+                <TextView
+                    android:id="@+id/frag_weather_city_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/frag_weather_change_city"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Subhead"
+                    android:textColor="@color/colorSecondaryText"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/frag_weather_city_name" />
+
+                <TextView
+                    android:id="@+id/frag_weather_city_by_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="8dp"
+                    android:gravity="top"
+                    android:text="@string/frag_weather_my_location"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Subhead"
+                    android:textColor="@color/colorSecondaryText"
+                    app:layout_constraintEnd_toEndOf="@+id/frag_weather_select"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/frag_weather_city_change"
+                    app:layout_constraintTop_toTopOf="@+id/frag_weather_city_change" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/frag_weather_factsContainer"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
+
+            <LinearLayout
+                android:id="@+id/frag_weather_progress_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/frag_weather_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/loading" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/frag_weather_temperature_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/frag_weather_icon"
+                    android:layout_width="@dimen/frag_weather_icon_size"
+                    android:layout_height="@dimen/frag_weather_icon_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/frag_weather_temp"
+                    app:layout_constraintEnd_toStartOf="@+id/frag_weather_temp"
+                    tools:src="@drawable/ic_launcher_foreground" />
+
+                <TextView
+                    android:id="@+id/frag_weather_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="@dimen/frag_weather_temperature_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12c" />
+
+                <TextView
+                    android:id="@+id/frag_weather_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Medium"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/frag_weather_temp"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:text="Туманно солнечно" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+
+        <GridLayout
+            android:id="@+id/frag_weather_factsContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:columnCount="@integer/frag_weather_facts_columns_count"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                layout="@layout/merge_weather_fact"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <include
+                layout="@layout/merge_weather_fact"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <include
+                layout="@layout/merge_weather_fact"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <include
+                layout="@layout/merge_weather_fact"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+        </GridLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

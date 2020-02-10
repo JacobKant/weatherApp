@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="frag_weather_change_city">Сменить город</string>
+    <string name="frag_weather_my_location">Мое местоположение</string>
+    <string name="loading">Загрузка...</string>
+    <string name="frag_select_city_start_input_city">Начните вводить город на латинице</string>
+</resources>
