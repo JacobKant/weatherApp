@@ -4,6 +4,7 @@ import io.reactivex.rxkotlin.addTo
 import ru.jacobkant.weatherapp.data.CityRow
 import ru.jacobkant.weatherapp.data.EventBus
 import ru.jacobkant.weatherapp.model.WeatherInteractor
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 data class SelectCityViewState(
@@ -24,12 +25,8 @@ class SelectCityViewModel @Inject constructor(
 
     init {
         events.ofType(QueryChanged::class.java)
+            .debounce(300, TimeUnit.MILLISECONDS)
             .switchMapSingle {
-                state.onNext(
-                    currentState.copy(
-                        inputText = it.query
-                    )
-                )
                 interactor.findCityByName(it.query)
             }
             .subscribe {
@@ -39,7 +36,7 @@ class SelectCityViewModel @Inject constructor(
                     )
                 )
             }
-            .addTo(disposables)
+            .addTo(requestsDisposables)
     }
 
     override fun onEvent(event: Event) {

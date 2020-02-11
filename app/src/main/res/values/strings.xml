@@ -4,4 +4,21 @@
     <string name="frag_weather_my_location">Мое местоположение</string>
     <string name="loading">Загрузка...</string>
     <string name="frag_select_city_start_input_city">Начните вводить город на латинице</string>
+    <string name="frag_weather_location_permission_error">Нет разрешения на получение геопозиции</string>
+    <string name="frag_weather_enable_location__dialog_title">Включите GPS</string>
+    <string name="frag_weather_enable_location__dialog_pbutton">В настройки</string>
+    <string name="load_weather_common_error">Ошибка загрузки, попробуйте позже</string>
+    <string name="frag_weather_wind_label">Ветер</string>
+    <string name="frag_weather_wind_value_template">%1$s м/с, западный</string>
+
+    <string name="frag_weather_pressure_label">Давление</string>
+    <string name="frag_weather_pressure_value_template">%1$s мм рт. ст.</string>
+
+    <string name="frag_weather_humidity_label">Влажность</string>
+    <string name="frag_weather_humidity_value_template">%1$s%%</string>
+
+    <string name="frag_weather_cloudnes_label">Облачность</string>
+    <string name="frag_weather_cloudnes_value_template">%1$s%%</string>
+    <string name="city_placeholder">Город</string>
+
 </resources>

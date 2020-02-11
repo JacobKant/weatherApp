@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_select_city_container"
     android:layout_width="match_parent"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
     android:layout_height="match_parent"
-    android:minWidth="300dp"
-    android:padding="8dp"
-    android:orientation="vertical">
+    android:layout_gravity="top"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <AutoCompleteTextView
-        android:imeOptions="flagNoExtractUi"
         android:id="@+id/frag_select_city_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:hint="@string/frag_select_city_start_input_city"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:padding="4dp"
         tools:text="Запрос" />
 
-</LinearLayout>
+</FrameLayout>

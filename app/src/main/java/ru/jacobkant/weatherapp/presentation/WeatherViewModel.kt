@@ -1,12 +1,17 @@
 package ru.jacobkant.weatherapp.presentation
 
+import android.content.Context
 import android.os.Parcelable
+import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import ru.jacobkant.weatherapp.R
 import ru.jacobkant.weatherapp.data.EventBus
 import ru.jacobkant.weatherapp.data.SelectCity
 import ru.jacobkant.weatherapp.model.TemperatureUnit
 import ru.jacobkant.weatherapp.model.Weather
 import ru.jacobkant.weatherapp.model.WeatherInteractor
+import ru.jacobkant.weatherapp.openWeatherMapApi.OpenWeatherMapApi
 import javax.inject.Inject
 
 data class WeatherViewState(
@@ -20,21 +25,25 @@ data class WeatherViewState(
     val errorText: String? = null
 )
 
-data class OnCreate(val savedInstanceState: Parcelable?) : Event()
+data class OnResume(val savedInstanceState: Parcelable?) : Event()
+data class OnPause(val savedInstanceState: Parcelable?) : Event()
 data class SelectTemperatureUnit(val tempUnit: TemperatureUnit) : Event()
 data class ClickChangeCity(val cityId: Long) : Event()
 object ClickMyLocation : Event()
 
 class WeatherViewModel @Inject constructor(
+    private val context: Context,
     private val weatherInteractor: WeatherInteractor,
-    private val bus: EventBus
+    bus: EventBus
 ) : MviViewModel<WeatherViewState>() {
 
     init {
         bus.getEvent(SelectCity::class.java)
             .subscribe {
-                fetchByCity(it.cityId)
-            }.addTo(disposables)
+                weatherInteractor.fetchWeatherByCityId(it.cityId)
+                    .map(this::mapToWeatherViewState)
+                    .request()
+            }.addTo(requestsDisposables)
     }
 
     override val initialState: WeatherViewState
@@ -42,12 +51,20 @@ class WeatherViewModel @Inject constructor(
 
     override fun onEvent(event: Event) {
         when (event) {
-            is OnCreate -> {}
+            is OnResume -> {
+                weatherInteractor.getInitialWeather()
+                    .map(this::mapToWeatherViewState)
+                    .request()
+            }
             is ClickMyLocation -> {
-                fetchCurrentWeatherByLocation()
+                weatherInteractor.fetchWeatherByLocation()
+                    .map(this::mapToWeatherViewState)
+                    .request()
             }
             is ClickChangeCity -> {
-                fetchByCity(event.cityId)
+                weatherInteractor.fetchWeatherByCityId(event.cityId)
+                    .map(this::mapToWeatherViewState)
+                    .request()
             }
             is SelectTemperatureUnit -> {
                 if (currentState.selectedTempUnit != event.tempUnit) {
@@ -61,56 +78,45 @@ class WeatherViewModel @Inject constructor(
                             {
                             }
                         )
-                        .addTo(disposables)
+                        .addTo(requestsDisposables)
                 }
             }
         }
     }
 
-    private fun fetchByCity(cityId: Long) {
-        state.onNext(
-            currentState.copy(
-                isWeatherLoading = true
-            )
-        )
-        weatherInteractor.fetchWeatherByCityId(cityId)
-            .map {
-                mapToWeatherViewState(it)
-            }
-            .toObservable()
-            .subscribe({
-                state.onNext(it)
-            }, {
-                state.onNext(
-                    currentState.copy(
-                        isWeatherLoading = false,
-                        errorText = "Ошибка загрузки, попробуйте позже"
-                    )
-                )
-            }).addTo(disposables)
+    private fun Single<WeatherViewState>.request() {
+        this.toMaybe().request()
     }
 
-    private fun fetchCurrentWeatherByLocation() {
-        state.onNext(
-            currentState.copy(
-                isWeatherLoading = true
-            )
-        )
-        weatherInteractor.fetchWeatherByLocation()
-            .map {
-                mapToWeatherViewState(it)
-            }
-            .toObservable()
-            .subscribe({
-                state.onNext(it)
-            }, {
+    private fun Maybe<WeatherViewState>.request() {
+        this
+            .doOnSubscribe {
                 state.onNext(
                     currentState.copy(
-                        isWeatherLoading = false,
-                        errorText = "Ошибка загрузки, попробуйте позже"
+                        isWeatherLoading = true
                     )
                 )
-            }).addTo(disposables)
+            }
+            .toObservable()
+            .subscribe(
+                {
+                    state.onNext(it)
+                },
+                {
+                    state.onNext(
+                        currentState.copy(
+                            isWeatherLoading = false,
+                            errorText = context.getString(R.string.load_weather_common_error)
+                        )
+                    )
+                },
+                {
+                    state.onNext(
+                        currentState.copy(
+                            isWeatherLoading = false
+                        )
+                    )
+                }).addTo(requestsDisposables)
     }
 
     private fun mapToWeatherViewState(it: Weather): WeatherViewState {
@@ -119,12 +125,24 @@ class WeatherViewModel @Inject constructor(
             tempDescription = it.weatherDescription,
             tempText = "${it.temperature.toInt()}º",
             selectedTempUnit = it.currentTemperatureUnit,
-            iconUrl = "https://openweathermap.org/img/wn/${it.iconCode}@2x.png",
+            iconUrl = OpenWeatherMapApi.getIconUrl(it.iconCode),
             facts = listOf(
-                "Ветер" to "${it.windSpeed} м/с, западный",
-                "Давление" to "${it.pressure} мм рт. ст.",
-                "Влажность" to "${it.humidity}%",
-                "Облачность" to "${it.cloudnes}%"
+                context.getString(R.string.frag_weather_wind_label) to context.getString(
+                    R.string.frag_weather_wind_value_template,
+                    it.windSpeed.toString()
+                ),
+                context.getString(R.string.frag_weather_pressure_label) to context.getString(
+                    R.string.frag_weather_pressure_value_template,
+                    it.pressure.toString()
+                ),
+                context.getString(R.string.frag_weather_humidity_label) to context.getString(
+                    R.string.frag_weather_humidity_value_template,
+                    it.humidity.toString()
+                ),
+                context.getString(R.string.frag_weather_cloudnes_label) to context.getString(
+                    R.string.frag_weather_cloudnes_value_template,
+                    it.cloudnes.toString()
+                )
             ),
             errorText = null,
             isWeatherLoading = false

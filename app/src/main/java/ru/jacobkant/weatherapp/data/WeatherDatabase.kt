@@ -15,7 +15,7 @@ data class CityRow(
 
 @Dao
 interface CityDao {
-    @Query("SELECT id, name FROM city WHERE name LIKE :namePart")
+    @Query("SELECT id, name FROM city WHERE name LIKE :namePart LIMIT 100")
     fun findByName(namePart: String): Single<List<CityRow>>
 }
 

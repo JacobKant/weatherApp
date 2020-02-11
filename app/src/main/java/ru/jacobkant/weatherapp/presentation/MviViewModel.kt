@@ -11,7 +11,8 @@ import io.reactivex.subjects.BehaviorSubject
 abstract class Event
 
 abstract class MviViewModel<State> : ViewModel() {
-    protected val disposables = CompositeDisposable()
+    protected val requestsDisposables = CompositeDisposable()
+    private val eventsSubscription = CompositeDisposable()
 
     abstract val initialState: State
 
@@ -27,13 +28,14 @@ abstract class MviViewModel<State> : ViewModel() {
         get() = state.value!!
 
     init {
-        events.subscribe { onEvent(it) }.addTo(disposables)
+        events.subscribe { onEvent(it) }.addTo(eventsSubscription)
     }
 
     protected abstract fun onEvent(event: Event)
 
     override fun onCleared() {
         super.onCleared()
-        disposables.clear()
+        requestsDisposables.clear()
+        eventsSubscription.clear()
     }
 }

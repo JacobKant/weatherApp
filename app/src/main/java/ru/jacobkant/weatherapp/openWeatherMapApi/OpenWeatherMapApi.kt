@@ -14,6 +14,7 @@ import ru.jacobkant.weatherapp.openWeatherMapApi.model.CurrentWeatherResponse
 
 
 interface OpenWeatherMapApi {
+
     companion object {
         private const val Current = "/data/2.5/weather"
 
@@ -40,6 +41,9 @@ interface OpenWeatherMapApi {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build().create(OpenWeatherMapApi::class.java)
         }
+
+        fun getIconUrl(iconCode: String) =
+            "https://openweathermap.org/img/wn/${iconCode}@2x.png"
     }
 
     @GET(Current)
