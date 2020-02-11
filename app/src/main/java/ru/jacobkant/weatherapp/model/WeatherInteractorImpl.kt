@@ -43,7 +43,7 @@ class WeatherInteractorImpl @Inject constructor(
                                         weather
                                     }.toMaybe()
                             } else {
-                                Maybe.empty<Weather>()
+                                fetchWeatherByCityId(weatherRepository.lastCityId).toMaybe()
                             }
                         }
                 } else {
